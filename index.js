@@ -1,6 +1,5 @@
 "use strict";
 const anyMatch = require("any-match");
-const deepFreeze = require("deep-freeze-node");
 const evaluateValue = require("evaluate-value");
 const isURL = require("isurl");
 const stripWWW = require("strip-www");
@@ -14,6 +13,32 @@ const ENCODED_SPACE = /%20/g;
 const MULTIPLE_SLASHES = /\/{2,}/g;
 const TRAILING_EQUALS = /([^&\?])=$/;
 const TRAILING_QUESTION = /\?#?(?:.+)?$/;
+
+
+
+const deepFreeze = object =>
+	{
+		if (object)
+	{
+			let property;
+			object = Object.freeze(object);
+			const propNames = Reflect.ownKeys(object);
+			for (const propertyKey of propNames)
+	{
+				property = object[propertyKey];
+				if (
+					typeof property !== "object" ||
+					!(property instanceof Object) ||
+					Object.isFrozen(property)
+				)
+	{
+					continue;
+				}
+				deepFreeze(property);
+			}
+		}
+		return object;
+	};
 
 
 
